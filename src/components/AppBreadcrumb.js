@@ -33,7 +33,7 @@ const AppBreadcrumb = () => {
 
   return (
     <CBreadcrumb className="m-0 ms-2" style={{fontSize:"0.75rem"}}>
-      {console.log(currentLocation, "location")}
+      {/* {console.log(currentLocation, "location")} */}
       {currentLocation !== "/dashboard" && (
         <Link className="breadcrumb-item" to={"dashboard"}>
           <CBreadcrumbItem>Dashboard</CBreadcrumbItem>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   CContainer,
@@ -18,12 +18,14 @@ import './appHeader.css'
 
 const AppHeader = () => {
   const dispatch = useDispatch();
-  const userInfo1 = localStorage.getItem("userInfo");
-  // const userInfo = JSON.parse(userInfo1);
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   const sidebarShow = useSelector((state) => state.changeState.sidebarShow);
   // const userInfo = useSelector((state) => state.userLoginInfo);
-  const userInfo = JSON.parse(localStorage.getItem('token'));
+  // const tokenInfo = JSON.parse(localStorage.getItem('token'));
   // console.log("AppHeaderUserInfo", userInfo);
+
+
+  // console.log(userInfo)
 
   return (
     <>
@@ -41,7 +43,7 @@ const AppHeader = () => {
             <CHeaderNav>
               {/* <CNavItem> */}
                 <CNavLink >
-                  Sartaj Alam
+                {userInfo?.name}
                 </CNavLink>
               {/* </CNavItem> */}
             </CHeaderNav>

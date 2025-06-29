@@ -26,13 +26,35 @@ export let userModeValue;
 import { addAuthToken } from '../../../redux/actions/authTokenAction'
 
 
-
 const Login = () => {
   const dispatch = useDispatch();
   const toast = useRef(null);
   let data = useSelector((state) => state);
   // console.log("data", data)
   const navigate = useNavigate();
+
+  const [userList, setUserList] = useState([
+    {
+      id: '101',
+      name: 'Sartaj Alam',
+      email: 'sartaj@gmail.com',
+      password: 'admin@123',
+      mobile: '9958564890',
+      role: 'Admin',
+      img: '',
+      status: 'Active'
+    },
+    {
+      id: '102',
+      name: 'Shubham Kumar',
+      email: 'shubham@gmail.com',
+      password: 'user@123',
+      mobile: '90135 83267',
+      role: 'User',
+      img: '',
+      status: 'Active'
+    }
+  ])
 
   const loginFormik = useFormik({
     initialValues: {
@@ -53,8 +75,8 @@ const Login = () => {
     },
     onSubmit: (data) => {
       // console.log("formik", data);
-      // loginUser(data);
-      navigate("/dashboard");
+      loginUser(data);
+      // navigate("/dashboard");
     },
   });
   const isLoginFormFieldValid = (name) =>
@@ -73,38 +95,55 @@ const Login = () => {
       email: data.email,
       password: data.password
     }
-    // console.log("postData", postData);
-    await axios
-      .post(
-        `${AppConstants.Api_BaseUrl}users/admin/login`, postData,
-        {
-          headers: {
-            // Authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzODhlY2Y1OWMwZTVmNjJiM2ZkMWI4ZiIsImlhdCI6MTY2OTkxNzk0MX0.hWr6QfcSlsTWPOoEY4nLbFDmeGKLACewjacRMxuyQtE",
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        let dt = res.data;
+    
+    const loggedInUser = userList.filter((item)=>{
 
-        if (dt.data  !== undefined ) {
-          const tokenVal = JSON.stringify(dt.data)
-          userMode = 1;
-          navigate("/dashboard");
-          dispatch(addAuthToken(dt));
-          dispatch(loginMode({ userModeValue: 1 }))
-          localStorage.setItem('token', tokenVal);
-          const tokenData = localStorage.getItem('token')
-          // console.log("loginData", tokenData)
-        } else {
-          showErrorMessage("error", dt.error.message);
-          // navigate("/login");
-        }
-        // console.log("error", dt);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      if (item?.email === data.email && item?.password === data.password){
+        // Cookies.set('userInfo', JSON.stringify(item), { expires: 7 });
+        localStorage.setItem('userInfo', JSON.stringify(item));
+        // console.log(item)
+        navigate("/dashboard");
+      } else if (item?.email !== data.email && item?.password === data.password){
+        showErrorMessage("error", "User does not exist.");
+      } else if (item?.email === data.email && item?.password !== data.password) {
+        showErrorMessage("error", "Email or Password is incorrect.");
+      } else{
+        showErrorMessage("error", "Email or Password is incorrect.");
+      }
+    })
+
+    // console.log("postData", postData);
+    // await axios
+    //   .post(
+    //     `${AppConstants.Api_BaseUrl}users/admin/login`, postData,
+    //     {
+    //       headers: {
+    //         Authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzODhlY2Y1OWMwZTVmNjJiM2ZkMWI4ZiIsImlhdCI6MTY2OTkxNzk0MX0.hWr6QfcSlsTWPOoEY4nLbFDmeGKLACewjacRMxuyQtE",
+    //         "Content-Type": "application/json",
+    //       },
+    //     }
+    //   )
+    //   .then((res) => {
+    //     let dt = res.data;
+
+    //     if (dt.data  !== undefined ) {
+    //       const tokenVal = JSON.stringify(dt.data)
+    //       userMode = 1;
+    //       navigate("/dashboard");
+    //       dispatch(addAuthToken(dt));
+    //       dispatch(loginMode({ userModeValue: 1 }))
+    //       localStorage.setItem('token', tokenVal);
+    //       const tokenData = localStorage.getItem('token')
+    //       // console.log("loginData", tokenData)
+    //     } else {
+    //       showErrorMessage("error", dt.error.message);
+    //       // navigate("/login");
+    //     }
+    //     // console.log("error", dt);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
   };
 
   // === show error message ==== ===
